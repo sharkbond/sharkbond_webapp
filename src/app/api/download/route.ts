@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 
 export async function GET() {
-  const fileId = '1uwlTKvq7T25iMClaVuMy2yQJSf10p6p5';
+  const fileId = '1RvYZVjiNvoMmdMYQqmr1PTcmETfwsYfO';
   const url = `https://drive.google.com/uc?export=download&id=${fileId}`;
 
   try {
