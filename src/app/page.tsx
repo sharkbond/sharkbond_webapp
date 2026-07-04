@@ -1,22 +1,22 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { useNavigation, pageTitles, pageDescriptions, pageKeywords, syncWithHash } from '@/store/navigation';
+import { useNavigation, pageTitles, pageDescriptions, pageKeywords, syncWithPath } from '@/store/navigation';
 import Navbar from '@/components/sharkbond/Navbar';
 import Footer from '@/components/sharkbond/Footer';
 import FloatingButtons from '@/components/sharkbond/FloatingButtons';
 import PageTransition from '@/components/sharkbond/PageTransition';
-import Home from '@/pages/Home';
-import About from '@/pages/About';
-import Products from '@/pages/Products';
-import ProductDetail from '@/pages/ProductDetail';
-import Dealership from '@/pages/Dealership';
-import Contact from '@/pages/Contact';
-import Privacy from '@/pages/Privacy';
-import Terms from '@/pages/Terms';
-import FreeDelivery from '@/pages/FreeDelivery';
-import ReturnsPolicy from '@/pages/ReturnsPolicy';
-import NotFound from '@/pages/NotFound';
+import Home from '@/views/Home';
+import About from '@/views/About';
+import Products from '@/views/Products';
+import ProductDetail from '@/views/ProductDetail';
+import Dealership from '@/views/Dealership';
+import Contact from '@/views/Contact';
+import Privacy from '@/views/Privacy';
+import Terms from '@/views/Terms';
+import FreeDelivery from '@/views/FreeDelivery';
+import ReturnsPolicy from '@/views/ReturnsPolicy';
+import NotFound from '@/views/NotFound';
 
 const pageComponents: Record<string, React.ComponentType> = {
   home: Home,
@@ -35,9 +35,9 @@ const pageComponents: Record<string, React.ComponentType> = {
 export default function Page() {
   const { currentPage, productId } = useNavigation();
 
-  // Sync with URL hash on first client-side mount (deep linking support)
+  // Sync with URL path on first client-side mount (deep linking support)
   useEffect(() => {
-    syncWithHash();
+    syncWithPath();
   }, []);
 
   // Sync document title and SEO meta tags whenever the page changes

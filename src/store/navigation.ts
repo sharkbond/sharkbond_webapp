@@ -53,10 +53,10 @@ export const pageKeywords: Record<PageName, string> = {
   notFound: "404 page, page not found",
 };
 
-/* ─── Hash ↔ Page mapping ─── */
-export function parseHash(hash?: string): { page: PageName; productId: string | null } {
-  const h = (hash ?? (typeof window !== 'undefined' ? window.location.hash : '')).replace('#', '') || '/';
-  const segments = h.split('/').filter(Boolean);
+/* ─── Path ↔ Page mapping ─── */
+export function parsePath(path?: string): { page: PageName; productId: string | null } {
+  const p = path ?? (typeof window !== 'undefined' ? window.location.pathname : '/');
+  const segments = p.split('/').filter(Boolean);
 
   if (segments.length === 0) return { page: 'home', productId: null };
 
@@ -84,7 +84,7 @@ export function parseHash(hash?: string): { page: PageName; productId: string | 
   }
 }
 
-export function pageToHash(page: PageName, productId: string | null): string {
+export function pageToPath(page: PageName, productId: string | null): string {
   switch (page) {
     case 'home':
       return '/';
@@ -113,7 +113,7 @@ export function pageToHash(page: PageName, productId: string | null): string {
   }
 }
 
-/* ─── Flag to suppress duplicate hashchange during programmatic navigation ─── */
+/* ─── Flag to suppress duplicate popstate handling during programmatic navigation ─── */
 let isNavigating = false;
 
 /* ─── Zustand store — always starts with 'home' for SSR consistency ─── */
@@ -122,11 +122,11 @@ export const useNavigation = create<NavigationState>((set) => ({
   productId: null,
 
   navigate: (page, productId = null) => {
-    const hash = pageToHash(page, productId);
+    const path = pageToPath(page, productId);
 
-    // Update URL hash (this creates a browser history entry)
+    // Update URL using pushState (this creates a browser history entry without reload)
     isNavigating = true;
-    window.location.hash = hash;
+    window.history.pushState(null, '', path);
 
     // Immediately update state for instant UI response
     set({ currentPage: page, productId });
@@ -137,36 +137,31 @@ export const useNavigation = create<NavigationState>((set) => ({
     // Scroll to top instantly (smooth scroll during transitions causes jank)
     window.scrollTo({ top: 0, behavior: 'instant' });
 
-    // Reset flag after the hashchange event fires
+    // Reset flag after the pushState event/animation logic is done
     requestAnimationFrame(() => {
       isNavigating = false;
     });
   },
 }));
 
-/* ─── Sync store with URL hash on client-side mount ─── */
-export function syncWithHash(): void {
+/* ─── Sync store with URL path on client-side mount ─── */
+export function syncWithPath(): void {
   if (typeof window === 'undefined') return;
 
-  const { page, productId } = parseHash();
+  const { page, productId } = parsePath();
   if (page !== 'home' || productId !== null) {
     useNavigation.setState({ currentPage: page, productId });
     document.title = pageTitles[page] || pageTitles.home;
-  } else {
-    // Ensure hash exists even for home page
-    if (!window.location.hash || window.location.hash === '#') {
-      window.history.replaceState(null, '', '#/');
-    }
   }
 }
 
-/* ─── Listen for hash changes (browser back/forward & deep links) ─── */
+/* ─── Listen for popstate changes (browser back/forward & deep links) ─── */
 if (typeof window !== 'undefined') {
-  window.addEventListener('hashchange', () => {
-    // Skip if this hashchange was triggered by our own navigate() call
+  window.addEventListener('popstate', () => {
+    // Skip if this popstate was triggered by our own navigate() call
     if (isNavigating) return;
 
-    const { page, productId } = parseHash();
+    const { page, productId } = parsePath();
     const current = useNavigation.getState();
 
     // Only update if the page actually changed
