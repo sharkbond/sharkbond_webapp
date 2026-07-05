@@ -19,7 +19,13 @@ export const metadata: Metadata = {
   description: "Premium PVC, UPVC & CPVC Solvent Cement by Chemseal Industries. Strong Bond. Lasting Trust.",
   keywords: ["Shark Bond", "Solvent Cement", "PVC", "UPVC", "CPVC", "Chemseal Industries", "Pipe Cement"],
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: [
+      { url: "/favicon.png", sizes: "192x192", type: "image/png" },
+    ],
   },
 };
 
