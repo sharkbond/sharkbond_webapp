@@ -56,7 +56,7 @@ const Terms: React.FC = () => {
 
           <ScrollReveal>
             <div className="bg-sb-accent/5 border border-sb-accent/20 rounded-2xl px-6 py-4 mb-10 text-sm text-sb-grey font-body leading-relaxed">
-              <strong className="text-sb-primary">Please Read Carefully:</strong> By accessing and using the Shark Bond website (sharkbond.in), you agree to be bound by these Terms &amp; Conditions. If you do not agree, please discontinue use of this website.
+              <strong className="text-sb-primary">Please Read Carefully:</strong> By accessing and using the Shark Bond website (sharkbond.com), you agree to be bound by these Terms &amp; Conditions. If you do not agree, please discontinue use of this website.
             </div>
           </ScrollReveal>
 
